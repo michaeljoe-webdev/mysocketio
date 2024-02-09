@@ -5,6 +5,7 @@ const server = http.createServer(app);
 //npm install socket.io
 const { Server } = require("socket.io");
 const io = new Server(server);
+var connectCounter = 0;
 
 app.get('/', (req, res) => {
 //   res.send('<h1>Hello world</h1>');
@@ -12,17 +13,27 @@ app.get('/', (req, res) => {
 });
 
 //npm install socket.io
+// sample git clone (git clone https://github.com/socketio/chat-example.git)
 io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
+    //connected
+    connectCounter++; 
+    io.emit('active users', connectCounter);
+     console.log('a user connected',connectCounter);
+    //disconnected
+     socket.on('disconnect', function() {
+        connectCounter--;
+        io.emit('active users', connectCounter);
+        console.log('user disconnected', connectCounter);
     });
+    //notification
     socket.broadcast.emit('hi');
+    //msg on chat
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
         io.emit('chat message', msg);
     });
 });
+
 
 io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' }); // This will emit the event to all connected sockets
 

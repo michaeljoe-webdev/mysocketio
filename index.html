@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Socket.IO chat</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
@@ -13,9 +14,34 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
+      :root{
+        --position: absolute;
+        --font: 'FILL' 0,
+                'wght' 100,
+                'GRAD' 0,
+                'opsz' 24;
+      }
+      #user {
+        position: var(--position);
+        font-variation-settings: var(--font);
+    }
+    #active-users-count {
+        position: var(--position);
+        font-variation-settings: var(--font);
+        z-index: 1;
+        /* margin-top: 2px; */
+        margin-left: 18px;
+        font-size:12px;
+        color: red;
+    }
     </style>
   </head>
   <body>
+    <nav class="nav-bar">
+        <span class="material-icons" id="user">person</span>
+        <!-- <span class="material-icons" id="active-users-count">exposure_plus_1</span> -->
+        <span id="active-users-count">1</span>
+    </nav>
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
@@ -24,9 +50,13 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
-
         var form = document.getElementById('form');
         var input = document.getElementById('input');
+        var active_users_count = document.getElementById('active-users-count');
+        
+        socket.on('active users', function(count) {
+            active_users_count.textContent = count;
+        });
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -38,10 +68,13 @@
 
         socket.on('chat message', function(msg) {
             var item = document.createElement('li');
+            item.style.margin = '5px';
             item.textContent = msg;
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
         });
+
+
     </script>
   </body>
 </html>
