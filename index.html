@@ -4,43 +4,42 @@
     <title>Socket.IO chat</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-      #input:focus { outline: none; }
-      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+        #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+        #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+        #input:focus { outline: none; }
+        #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
 
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages > li { padding: 0.5rem 1rem; }
-      #messages > li:nth-child(odd) { background: #efefef; }
-      :root{
-        --position: absolute;
-        --font: 'FILL' 0,
-                'wght' 100,
-                'GRAD' 0,
-                'opsz' 24;
-      }
-      #user {
-        position: var(--position);
-        font-variation-settings: var(--font);
-    }
-    #active-users-count {
-        position: var(--position);
-        font-variation-settings: var(--font);
-        z-index: 1;
-        /* margin-top: 2px; */
-        margin-left: 18px;
-        font-size:12px;
-        color: red;
-    }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages > li { padding: 0.5rem 1rem; }
+        #messages > li:nth-child(odd) { background: #efefef; }
+        :root{
+            --position: absolute;
+            --font: 'FILL' 0,
+                    'wght' 100,
+                    'GRAD' 0,
+                    'opsz' 24;
+        }
+        #user {
+            /* border: 1px solid red; */
+            font-size:auto;
+
+        }
+        #active-users-count {
+            position: var(--position);
+            z-index: 1;
+            margin-left: -6px;
+            font-size:12px;
+            color: red;
+        }
     </style>
   </head>
   <body>
     <nav class="nav-bar">
         <span class="material-icons" id="user">person</span>
-        <!-- <span class="material-icons" id="active-users-count">exposure_plus_1</span> -->
         <span id="active-users-count">1</span>
+        <span id="notifymsg">Hello</span>
     </nav>
     <ul id="messages"></ul>
     <form id="form" action="">
@@ -48,12 +47,16 @@
     </form>
     <!-- SOCKET.io -->
     <script src="/socket.io/socket.io.js"></script>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/11.10.5/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/sweetalert2/11.10.5/sweetalert2.min.js"></script>
     <script>
         var socket = io();
         var form = document.getElementById('form');
         var input = document.getElementById('input');
         var active_users_count = document.getElementById('active-users-count');
-        
+        var notify_msg = document.getElementById('notifymsg')
+
         socket.on('active users', function(count) {
             active_users_count.textContent = count;
         });
@@ -74,7 +77,26 @@
             window.scrollTo(0, document.body.scrollHeight);
         });
 
+        // socket.on('broadcast',function(data){
+        //     console.log(data)
+        //     document.body.innerHTML = '';
+        //     document.write(data.description);
+        //     swal({
+        //         position: "top-end",
+        //         icon: "success",
+        //         title: "Your work has been saved",
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     });
+        // });
+        // function notify(event){
+        //     notify_msg.textContent = event
+        // }
 
+        
+        window.onbeforeunload = function () {
+            return "Do you really want to close?";
+        };
     </script>
   </body>
 </html>

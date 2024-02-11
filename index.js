@@ -7,6 +7,7 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 var connectCounter = 0;
 
+
 app.get('/', (req, res) => {
 //   res.send('<h1>Hello world</h1>');
     res.sendFile(__dirname + '/index.html');
@@ -19,11 +20,15 @@ io.on('connection', (socket) => {
     connectCounter++; 
     io.emit('active users', connectCounter);
      console.log('a user connected',connectCounter);
+     socket.broadcast.emit('broadcast',{ description: connectCounter + ' clients connected!'})
+
     //disconnected
      socket.on('disconnect', function() {
         connectCounter--;
         io.emit('active users', connectCounter);
         console.log('user disconnected', connectCounter);
+    //  socket.broadcast.emit('broadcast',{ description: connectCounter + ' clients disconnected!'})
+
     });
     //notification
     socket.broadcast.emit('hi');
